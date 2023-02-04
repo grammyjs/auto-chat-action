@@ -1,15 +1,15 @@
 {
-  "name": "grammy-auto-chat-action",
+  "name": "@grammyjs/auto-chat-action",
   "description": "A plugin for automatic sending a chat action",
-  "homepage": "https://github.com/deptyped/grammy-auto-chat-action#readme",
+  "homepage": "https://github.com/grammyjs/auto-chat-action#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deptyped/grammy-auto-chat-action.git"
+    "url": "git+https://github.com/grammyjs/auto-chat-action.git"
   },
   "author": "deptyped <deptyped@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/deptyped/grammy-auto-chat-action/issues"
+    "url": "https://github.com/grammyjs/auto-chat-action/issues"
   },
   "keywords": [
     "grammy",

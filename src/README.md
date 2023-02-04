@@ -8,7 +8,7 @@ This plugin provides a transformer to automatically send an appropriate
 ### Node
 
 ```sh
-npm i grammy-auto-chat-action
+npm i @grammyjs/auto-chat-action
 ```
 
 ### Deno
@@ -20,7 +20,7 @@ import { autoChatAction } from "https://deno.land/x/grammy_auto_chat_action/mod.
 ## Usage
 
 ```ts
-import { autoChatAction } from "grammy-auto-chat-action";
+import { autoChatAction } from "@grammyjs/auto-chat-action";
 
 // Install the plugin
 bot.api.config.use(autoChatAction());
