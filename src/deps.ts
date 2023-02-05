@@ -1,1 +1,4 @@
-export { type Transformer } from "https://lib.deno.dev/x/grammy@1.x/mod.ts";
+export {
+  InputFile,
+  type Transformer,
+} from "https://lib.deno.dev/x/grammy@1.x/mod.ts";
