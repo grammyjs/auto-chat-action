@@ -51,10 +51,14 @@ export function autoChatAction(): Transformer {
     if (isChatActionRequired(method) && "chat_id" in payload) {
       const sendAction = async () => {
         try {
-          await prev("sendChatAction", {
-            chat_id: payload.chat_id as string | number,
-            action: getChatAction(method),
-          });
+          await prev(
+            "sendChatAction",
+            {
+              chat_id: payload.chat_id as string | number,
+              action: getChatAction(method),
+            },
+            signal,
+          );
         } catch {
           clearInterval(handle);
         }
