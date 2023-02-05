@@ -629,4 +629,43 @@ describe("autoChatAction transformer", () => {
   });
 
   //#endregion
+
+  //#region message thread
+
+  it("should fill message_thread_id if it is present in payload", () => {
+    const photo = new InputFile("");
+    const message_thread_id = 1337;
+
+    bot.use((ctx) =>
+      ctx.api.sendPhoto(chat_id, photo, {
+        message_thread_id,
+      }, signal)
+    );
+
+    bot.handleUpdate({
+      update_id: 0,
+    });
+
+    assertSpyCallArgs(api, 0, 1, [
+      "sendChatAction",
+      {
+        action: "upload_photo",
+        chat_id,
+        message_thread_id,
+      },
+      signal,
+    ]);
+    assertSpyCallArgs(api, 1, 1, [
+      "sendPhoto",
+      {
+        photo,
+        chat_id,
+        message_thread_id,
+      },
+      signal,
+    ]);
+    assertSpyCalls(api, 2);
+  });
+
+  //#endregion
 });

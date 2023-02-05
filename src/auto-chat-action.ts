@@ -24,6 +24,11 @@ export function autoChatAction(): Transformer {
             {
               chat_id: payload.chat_id as string | number,
               action: getChatAction(method),
+              ...("message_thread_id" in payload
+                ? {
+                  message_thread_id: payload.message_thread_id,
+                }
+                : {}),
             },
             signal,
           );
