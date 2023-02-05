@@ -1,41 +1,5 @@
 import type { Transformer } from "./deps.ts";
-
-type Method =
-  | "sendMessage"
-  | "sendPhoto"
-  | "sendVideo"
-  | "sendVoice"
-  | "sendDocument"
-  | "sendSticker"
-  | "sendLocation"
-  | "sendVideoNote";
-
-type Action =
-  | "typing"
-  | "upload_photo"
-  | "upload_video"
-  | "upload_voice"
-  | "upload_document"
-  | "choose_sticker"
-  | "find_location"
-  | "upload_video_note";
-
-const actionByMethod = new Map([
-  ["sendMessage", "typing"],
-  ["sendPhoto", "upload_photo"],
-  ["sendVideo", "upload_video"],
-  ["sendVoice", "upload_voice"],
-  ["sendDocument", "upload_document"],
-  ["sendSticker", "choose_sticker"],
-  ["sendLocation", "find_location"],
-  ["sendVideoNote", "upload_video_note"],
-]);
-
-const isChatActionRequired = (method: string): method is Method =>
-  actionByMethod.has(method);
-
-const getChatAction = (method: Method): Action =>
-  actionByMethod.get(method) as Action;
+import { getChatAction, isChatActionRequired, isFileUpload } from "./utils.ts";
 
 /**
  * Creates an
@@ -48,7 +12,11 @@ export function autoChatAction(): Transformer {
   return async (prev, method, payload, signal) => {
     let handle: ReturnType<typeof setTimeout> | undefined;
 
-    if (isChatActionRequired(method) && "chat_id" in payload) {
+    if (
+      isChatActionRequired(method) &&
+      isFileUpload(payload) &&
+      "chat_id" in payload
+    ) {
       const sendAction = async () => {
         try {
           await prev(

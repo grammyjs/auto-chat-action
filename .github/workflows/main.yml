@@ -25,5 +25,8 @@ jobs:
       - name: Check
         run: deno check src/mod.ts
 
+      - name: Test
+        run: deno test
+
       - name: Backport
         run: deno task build-npm
