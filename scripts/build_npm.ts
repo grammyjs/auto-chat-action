@@ -23,6 +23,12 @@ await build({
       version: "^1.0.0",
       peerDependency: true,
     },
+    "https://lib.deno.dev/x/grammy@1.x/types.ts": {
+      name: "grammy",
+      version: "^1.0.0",
+      subPath: "out/types",
+      peerDependency: true,
+    },
   },
 });
 
