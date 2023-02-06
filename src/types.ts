@@ -1,13 +1,3 @@
-export type Method =
-  | "sendMessage"
-  | "sendPhoto"
-  | "sendVideo"
-  | "sendVoice"
-  | "sendDocument"
-  | "sendSticker"
-  | "sendLocation"
-  | "sendVideoNote";
-
 export type Action =
   | "typing"
   | "upload_photo"
