@@ -1,5 +1,5 @@
 import { Api } from "./deps.ts";
-import { Action, ChatId } from "./types.ts";
+import { Action, ChatId, Signal } from "./types.ts";
 import { createCycleGenerator } from "./utils.ts";
 
 export function createChatActionsController(api: Api) {
@@ -15,7 +15,7 @@ export function createChatActionsController(api: Api) {
       chatId: ChatId,
       actions: Action[],
       messageThreadId?: number,
-      signal?: AbortSignal,
+      signal?: Signal,
     ) {
       const chatActions = createCycleGenerator(actions);
 
