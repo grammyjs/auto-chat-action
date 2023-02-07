@@ -1,71 +1,100 @@
-import type { Transformer } from "./deps.ts";
 import { Action } from "./types.ts";
-import { getChatActionsForRequest } from "./chat-actions.ts";
-import { createCycleGenerator } from "./utils.ts";
+import { Context, type MiddlewareFn } from "./deps.ts";
+import { createChatActionsController } from "./chat-actions-controller.ts";
+import { getChatActionsForRequest } from "./media-chat-actions.ts";
 
-/**
- * Creates an
- * [API transformer function](https://grammy.dev/advanced/transformers.html)
- * that sends an appropriate chat action automatically.
- *
- * @returns The created API transformer function
- */
-export function autoChatAction(): Transformer {
-  return async (prev, method, payload, signal) => {
-    let handle: ReturnType<typeof setTimeout> | undefined;
+export type AutoChatActionFlavor = {
+  chatAction: Action | null;
+};
 
-    const sendAction = async (
-      chat_id: number | string,
-      action: Action,
-      message_thread_id?: number,
-    ) => {
-      try {
-        await prev(
-          "sendChatAction",
-          {
-            chat_id,
-            action,
-            ...(
-              typeof message_thread_id !== "undefined"
-                ? { message_thread_id }
-                : {}
-            ),
-          },
-          signal,
-        );
-      } catch {
-        clearInterval(handle);
-      }
-    };
-
-    const [hasChatActions, chatActions] = getChatActionsForRequest(
-      method,
-      payload,
-    );
-
-    if (
-      hasChatActions &&
-      "chat_id" in payload &&
-      typeof payload.chat_id !== "undefined"
-    ) {
-      const { chat_id } = payload;
-
-      const chatActionsGenerator = createCycleGenerator(chatActions);
-      const threadId = "message_thread_id" in payload
-        ? payload.message_thread_id
-        : undefined;
-
-      handle ??= setInterval(
-        () => sendAction(chat_id, chatActionsGenerator.next().value, threadId),
-        5_000,
-      );
-      sendAction(chat_id, chatActionsGenerator.next().value, threadId);
+export function autoChatAction<C extends Context>(): MiddlewareFn<
+  C & AutoChatActionFlavor
+> {
+  return async (ctx, next) => {
+    const isPluginInstalled = Object.hasOwn(ctx, "chatAction");
+    if (isPluginInstalled) {
+      return next();
     }
 
+    const chatActionsController = createChatActionsController(ctx.api);
+
+    ctx.api.config.use(
+      async (prev, method, payload, signal) => {
+        if (
+          !("chat_id" in payload) ||
+          typeof payload.chat_id === "undefined"
+        ) {
+          return prev(method, payload, signal);
+        }
+
+        const [hasActions, actions] = getChatActionsForRequest(
+          method,
+          payload,
+        );
+
+        if (!hasActions) {
+          return prev(method, payload, signal);
+        }
+
+        const messageThreadId = "message_thread_id" in payload
+          ? payload.message_thread_id
+          : undefined;
+
+        chatActionsController.startSending(
+          payload.chat_id,
+          actions,
+          messageThreadId,
+          signal,
+        );
+
+        try {
+          return await prev(method, payload, signal);
+        } finally {
+          chatActionsController.stopSending(
+            payload.chat_id,
+            messageThreadId,
+          );
+          currentAction = null;
+        }
+      },
+    );
+
+    let currentAction: Action | null = null;
+    Object.defineProperty(ctx, "chatAction", {
+      get() {
+        return currentAction;
+      },
+      set(newAction) {
+        if (typeof ctx.chat?.id === "undefined") {
+          return;
+        }
+
+        currentAction = newAction;
+
+        if (typeof currentAction !== "string") {
+          chatActionsController.stopSending(
+            ctx.chat.id,
+            ctx.msg?.message_thread_id,
+          );
+        } else {
+          chatActionsController.startSending(
+            ctx.chat.id,
+            [currentAction],
+            ctx.msg?.message_thread_id,
+          );
+        }
+      },
+    });
+
     try {
-      return await prev(method, payload, signal);
+      await next();
     } finally {
-      clearInterval(handle);
+      if (typeof ctx.chat?.id === "number") {
+        chatActionsController.stopSending(
+          ctx.chat.id,
+          ctx.msg?.message_thread_id,
+        );
+      }
     }
   };
 }
