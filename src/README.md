@@ -50,10 +50,18 @@ const bot = new Bot<MyContext>("token");
 // Install the plugin
 bot.use(autoChatAction());
 
-bot.command("start", async (ctx) => {
-  // Send the media and sending the "sending photo" chat action
-  // will start automatically until the media is uploaded
-  await ctx.replyWithPhoto(
+bot.command("start", (ctx) => {
+  // Starts sending "typing" chat action in a loop
+  ctx.chatAction = "typing";
+
+  // Some long-running operations...
+
+  return ctx.reply("42!");
+});
+
+bot.command("photo", (ctx) => {
+  // Sending the "sending photo" chat action until the media is uploaded
+  return ctx.replyWithPhoto(
     new InputFile("/tmp/picture.jpg"),
   );
 });
@@ -61,13 +69,12 @@ bot.command("start", async (ctx) => {
 bot.start();
 ```
 
-### Automatic Sending
+### Automatic Action Sending
 
 Automatic sending of a chat action starts under the following conditions:
 
 <!-- deno-fmt-ignore -->
-1. Request payload contains a chat ID.
-2. Request method from the list:
+1. Request method from the list:
    - sendPhoto
    - sendAudio
    - sendDocument
@@ -77,7 +84,8 @@ Automatic sending of a chat action starts under the following conditions:
    - sendVideoNote
    - sendSticker
    - sendMediaGroup
-3. Request payload contains [InputFile](https://grammy.dev/guide/files.html#uploading-your-own-files)
+2. Request payload contains [InputFile](https://grammy.dev/guide/files.html#uploading-your-own-files)
+3. Request payload contains a chat ID.
 
 Sending of a chat action stops under one of the following conditions:
 
@@ -85,19 +93,19 @@ Sending of a chat action stops under one of the following conditions:
 2. Request which requires the chat action is complete.
 3. `sendChatAction` request caused an error.
 
-### Manual Sending
+### Manual Action Sending
+
+#### Sending chat action with context
 
 ```ts
-bot.command("start", async (ctx) => {
-  // Set the action to be sent until the update is processed
-  ctx.chatAction = "typing";
+// Set the action to be sent until the update is processed
+ctx.chatAction = "typing";
 
-  // To stop sending, simply set the chat action to null
-  ctx.chatAction = null;
+// To stop sending, simply set the chat action to null
+ctx.chatAction = null;
 
-  // You can change the chat action during update processing
-  ctx.chatAction = "choose_sticker";
-});
+// You can change the chat action during update processing
+ctx.chatAction = "choose_sticker";
 ```
 
 Sending other requests that require sending a chat action will interrupt the
@@ -115,4 +123,16 @@ await ctx.replyWithPhoto(
 
 // Now there is no sending chat action
 // ctx.chatAction is null
+```
+
+#### Sending chat action with middleware
+
+```ts
+import { chatAction } from "@grammyjs/auto-chat-action";
+
+bot.command("start", chatAction("typing"), (ctx) => {
+  // Some long-running operations...
+
+  return ctx.reply("42!");
+});
 ```

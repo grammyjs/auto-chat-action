@@ -1,4 +1,7 @@
-import { assertEquals } from "https://deno.land/std@0.176.0/testing/asserts.ts";
+import {
+  assertEquals,
+  assertRejects,
+} from "https://deno.land/std@0.176.0/testing/asserts.ts";
 import {
   beforeEach,
   describe,
@@ -11,7 +14,8 @@ import {
   spy,
 } from "https://deno.land/std@0.176.0/testing/mock.ts";
 import { FakeTime } from "https://deno.land/std@0.176.0/testing/time.ts";
-import { Bot } from "https://lib.deno.dev/x/grammy@1.x/mod.ts";
+import { Bot, BotError } from "https://lib.deno.dev/x/grammy@1.x/mod.ts";
+import { chatAction } from "../src/auto-chat-action.ts";
 import { InputFile } from "../src/deps.ts";
 import { autoChatAction } from "../src/mod.ts";
 import {
@@ -1322,13 +1326,6 @@ describe("autoChatAction middleware", () => {
     const time = new FakeTime();
 
     try {
-      bot.use(async (_, next) => {
-        try {
-          await next();
-        } catch {
-          // expected error
-        }
-      });
       bot.use(autoChatAction());
       bot.use((ctx, next) => {
         ctx.chatAction = "typing";
@@ -1339,10 +1336,14 @@ describe("autoChatAction middleware", () => {
         throw new Error();
       });
 
-      await bot.handleUpdate({
-        update_id: 0,
-        message: createMessage({ chat_id }),
-      });
+      assertRejects(
+        () =>
+          bot.handleUpdate({
+            update_id: 0,
+            message: createMessage({ chat_id }),
+          }),
+        Error,
+      );
 
       await time.tickAsync(actionSendingInterval * 2);
 
@@ -1462,4 +1463,50 @@ describe("autoChatAction middleware", () => {
   });
 
   //#endregion
+});
+
+describe("chatAction middleware", () => {
+  const signal = undefined;
+
+  it("should not be allow to use before the plugin has been installed", () => {
+    const bot = createBot();
+
+    bot.use(chatAction("typing"));
+    bot.use(autoChatAction());
+
+    assertRejects(
+      () =>
+        bot.handleUpdate({
+          update_id: 0,
+        }),
+      BotError,
+    );
+  });
+
+  it("should send chat action", async () => {
+    const bot = createBot();
+    const api: Spy = spy((
+      _prev,
+      _method: string,
+      _payload: Record<string, unknown>,
+    ) => Promise.resolve({ ok: true as const, result: true }));
+
+    bot.api.config.use(api);
+    bot.use(autoChatAction());
+    bot.use(chatAction("typing"));
+
+    await bot.handleUpdate({
+      update_id: 0,
+      message: createMessage({ chat_id }),
+    });
+
+    assertSpyCallArgs(api, 0, 1, [
+      "sendChatAction",
+      {
+        action: "typing",
+        chat_id,
+      },
+      signal,
+    ]);
+  });
 });

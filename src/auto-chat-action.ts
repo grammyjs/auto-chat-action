@@ -98,3 +98,20 @@ export function autoChatAction<C extends Context>(): MiddlewareFn<
     }
   };
 }
+
+export function chatAction<C extends Context>(action: Action): MiddlewareFn<
+  C & AutoChatActionFlavor
+> {
+  return (ctx, next) => {
+    const isPluginNotInstalled = Object.hasOwn(ctx, "chatAction") === false;
+    if (isPluginNotInstalled) {
+      throw new Error(
+        "Please first install the auto-chat-action plugin to set a chat action.",
+      );
+    }
+
+    ctx.chatAction = action;
+
+    return next();
+  };
+}
