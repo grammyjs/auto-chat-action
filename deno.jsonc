@@ -1,6 +1,8 @@
 {
   "tasks": {
     "dev": "deno fmt && deno lint && deno run --watch src/mod.ts",
+    "coverage": "deno test --coverage=./test/coverage && deno coverage --lcov --output=./coverage.lcov ./test/coverage",
+    "report": "genhtml ./coverage.lcov --output-directory ./test/coverage/report/ && echo 'Point your browser to test/coverage/report/index.html to see the test coverage report.'",
     "build-npm": "deno run --allow-run --allow-net --allow-read --allow-write --allow-env ./scripts/build_npm.ts"
   },
   "fmt": {
