@@ -64,3 +64,7 @@ export function createChatActionsController(api: Api) {
     },
   };
 }
+
+export type ChatActionsController = ReturnType<
+  typeof createChatActionsController
+>;
