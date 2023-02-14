@@ -132,3 +132,5 @@ data/
 *.env
 
 npm/
+
+deno.lock
