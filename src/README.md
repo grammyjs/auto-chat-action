@@ -60,7 +60,7 @@ bot.command("start", (ctx) => {
 });
 
 bot.command("photo", (ctx) => {
-  // Sending the "sending photo" chat action until the media is uploaded
+  // Sending the "upload_photo" chat action until the media is uploaded
   return ctx.replyWithPhoto(
     new InputFile("/tmp/picture.jpg"),
   );
