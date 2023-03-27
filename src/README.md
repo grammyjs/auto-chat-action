@@ -139,27 +139,18 @@ bot.command("start", chatAction("typing"), (ctx) => {
 
 #### Using with [Conversations](https://grammy.dev/plugins/conversations)
 
-You need to pass the chat action controller explicitly to use the plugin with
-conversations. It is important that the controller is the same.
+You need to pass `bot.api` explicitly to use the plugin with conversations.
 
 ```ts
-import { createChatActionsController } from "@grammyjs/auto-chat-action";
-
-// 1. Create chat actions controller
-const chatActionsController = createChatActionsController(bot.api);
-
-// 2. Pass controller to the plugin
-bot.use(autoChatAction(chatActionsController));
+// Pass API instance to the plugin
+bot.use(autoChatAction(bot.api));
 
 async function greeting(conversation: Conversation<Context>, ctx: Context) {
-  // 3. Pass controller to the plugin inside conversation
-  await conversation.run(autoChatAction(chatActionsController));
-
-  ctx.chatAction = "typing";
   await ctx.reply("Hi there! What is your name?");
 
   const { message } = await conversation.wait();
   ctx.chatAction = "typing";
+  await conversation.sleep(1000);
   await ctx.reply(`Welcome to the chat, ${message.text}!`);
 }
 ```
