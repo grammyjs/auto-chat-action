@@ -1,9 +1,6 @@
 import { Action } from "./types.ts";
-import { Context, type MiddlewareFn } from "./deps.ts";
-import {
-  ChatActionsController,
-  createChatActionsController,
-} from "./chat-actions-controller.ts";
+import { Api, Context, type MiddlewareFn } from "./deps.ts";
+import { createChatActionsController } from "./chat-actions-controller.ts";
 import { getChatActionsForRequest } from "./extract-chat-actions.ts";
 
 export type AutoChatActionFlavor = {
@@ -11,7 +8,7 @@ export type AutoChatActionFlavor = {
 };
 
 export function autoChatAction<C extends Context>(
-  controller?: ChatActionsController,
+  api?: Api,
 ): MiddlewareFn<
   C & AutoChatActionFlavor
 > {
@@ -21,8 +18,7 @@ export function autoChatAction<C extends Context>(
       return next();
     }
 
-    const chatActionsController = controller ??
-      createChatActionsController(ctx.api);
+    const chatActionsController = createChatActionsController(api ?? ctx.api);
 
     ctx.api.config.use(
       async (prev, method, payload, signal) => {
