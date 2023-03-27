@@ -1,7 +1,7 @@
 {
   "name": "@grammyjs/auto-chat-action",
   "description": "A plugin for automatic sending a chat action",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/grammyjs/auto-chat-action#readme",
   "repository": {
     "type": "git",
