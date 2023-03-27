@@ -15,7 +15,7 @@ await build({
   test: false,
   package: {
     ...package_,
-    version: Deno.args[0],
+    version: Deno.args[0] ?? package_.version,
   },
   mappings: {
     "https://lib.deno.dev/x/grammy@1.x/mod.ts": {
