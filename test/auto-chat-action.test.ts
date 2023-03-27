@@ -375,13 +375,13 @@ describe("autoChatAction transformer", () => {
   it("should send chat action if sendAudio contains files to upload", async () => {
     const audioFile = new InputFile("");
     const audioFileId = "";
-    const thumb = new InputFile("");
+    const thumbnail = new InputFile("");
 
     bot.use(autoChatAction());
     bot.use((ctx) =>
       Promise.all([
         ctx.api.sendAudio(chat_id, audioFile, {}, signal),
-        ctx.api.sendAudio(chat_id, audioFileId, { thumb }, signal),
+        ctx.api.sendAudio(chat_id, audioFileId, { thumbnail }, signal),
       ])
     );
 
@@ -409,7 +409,7 @@ describe("autoChatAction transformer", () => {
       signal,
     ]);
 
-    // thumb
+    // thumbnail
     assertSpyCallArgs(api, 2, 1, [
       "sendChatAction",
       {
@@ -423,7 +423,7 @@ describe("autoChatAction transformer", () => {
       "sendAudio",
       {
         audio: audioFileId,
-        thumb,
+        thumbnail,
         chat_id,
       },
       signal,
@@ -461,13 +461,13 @@ describe("autoChatAction transformer", () => {
   it("should send chat action if sendDocument contains files to upload", async () => {
     const documentFile = new InputFile("");
     const documentFileId = "";
-    const thumb = new InputFile("");
+    const thumbnail = new InputFile("");
 
     bot.use(autoChatAction());
     bot.use((ctx) =>
       Promise.all([
         ctx.api.sendDocument(chat_id, documentFile, {}, signal),
-        ctx.api.sendDocument(chat_id, documentFileId, { thumb }, signal),
+        ctx.api.sendDocument(chat_id, documentFileId, { thumbnail }, signal),
       ])
     );
 
@@ -495,7 +495,7 @@ describe("autoChatAction transformer", () => {
       signal,
     ]);
 
-    // thumb
+    // thumbnail
     assertSpyCallArgs(api, 2, 1, [
       "sendChatAction",
       {
@@ -509,7 +509,7 @@ describe("autoChatAction transformer", () => {
       "sendDocument",
       {
         document: documentFileId,
-        thumb,
+        thumbnail,
         chat_id,
       },
       signal,
@@ -547,13 +547,13 @@ describe("autoChatAction transformer", () => {
   it("should send chat action if sendVideo contains files to upload", async () => {
     const videoFile = new InputFile("");
     const videoFileId = "";
-    const thumb = new InputFile("");
+    const thumbnail = new InputFile("");
 
     bot.use(autoChatAction());
     bot.use((ctx) =>
       Promise.all([
         ctx.api.sendVideo(chat_id, videoFile, {}, signal),
-        ctx.api.sendVideo(chat_id, videoFileId, { thumb }, signal),
+        ctx.api.sendVideo(chat_id, videoFileId, { thumbnail }, signal),
       ])
     );
 
@@ -581,7 +581,7 @@ describe("autoChatAction transformer", () => {
       signal,
     ]);
 
-    // thumb
+    // thumbnail
     assertSpyCallArgs(api, 2, 1, [
       "sendChatAction",
       {
@@ -595,7 +595,7 @@ describe("autoChatAction transformer", () => {
       "sendVideo",
       {
         video: videoFileId,
-        thumb,
+        thumbnail,
         chat_id,
       },
       signal,
@@ -633,13 +633,13 @@ describe("autoChatAction transformer", () => {
   it("should send chat action if sendAnimation contains files to upload", async () => {
     const animationFile = new InputFile("");
     const animationFileId = "";
-    const thumb = new InputFile("");
+    const thumbnail = new InputFile("");
 
     bot.use(autoChatAction());
     bot.use((ctx) =>
       Promise.all([
         ctx.api.sendAnimation(chat_id, animationFile, {}, signal),
-        ctx.api.sendAnimation(chat_id, animationFileId, { thumb }, signal),
+        ctx.api.sendAnimation(chat_id, animationFileId, { thumbnail }, signal),
       ])
     );
 
@@ -667,7 +667,7 @@ describe("autoChatAction transformer", () => {
       signal,
     ]);
 
-    // thumb
+    // thumbnail
     assertSpyCallArgs(api, 2, 1, [
       "sendChatAction",
       {
@@ -681,7 +681,7 @@ describe("autoChatAction transformer", () => {
       "sendAnimation",
       {
         animation: animationFileId,
-        thumb,
+        thumbnail,
         chat_id,
       },
       signal,
@@ -775,13 +775,13 @@ describe("autoChatAction transformer", () => {
   it("should send chat action if sendVideoNote contains files to upload", async () => {
     const videoNoteFile = new InputFile("");
     const videoNoteFileId = "";
-    const thumb = new InputFile("");
+    const thumbnail = new InputFile("");
 
     bot.use(autoChatAction());
     bot.use((ctx) =>
       Promise.all([
         ctx.api.sendVideoNote(chat_id, videoNoteFile, {}, signal),
-        ctx.api.sendVideoNote(chat_id, videoNoteFileId, { thumb }, signal),
+        ctx.api.sendVideoNote(chat_id, videoNoteFileId, { thumbnail }, signal),
       ])
     );
 
@@ -809,7 +809,7 @@ describe("autoChatAction transformer", () => {
       signal,
     ]);
 
-    // thumb
+    // thumbnail
     assertSpyCallArgs(api, 2, 1, [
       "sendChatAction",
       {
@@ -823,7 +823,7 @@ describe("autoChatAction transformer", () => {
       "sendVideoNote",
       {
         video_note: videoNoteFileId,
-        thumb,
+        thumbnail,
         chat_id,
       },
       signal,

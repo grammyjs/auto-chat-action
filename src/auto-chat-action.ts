@@ -1,7 +1,7 @@
 import { Action } from "./types.ts";
 import { Context, type MiddlewareFn } from "./deps.ts";
 import { createChatActionsController } from "./chat-actions-controller.ts";
-import { getChatActionsForRequest } from "./media-chat-actions.ts";
+import { getChatActionsForRequest } from "./extract-chat-actions.ts";
 
 export type AutoChatActionFlavor = {
   chatAction: Action | null;
