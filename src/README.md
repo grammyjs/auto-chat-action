@@ -45,7 +45,7 @@ import {
 type MyContext = Context & AutoChatActionFlavor;
 
 // Create a bot.
-const bot = new Bot<MyContext>("token");
+const bot = new Bot<MyContext>("");
 
 // Install the plugin
 bot.use(autoChatAction());
@@ -68,6 +68,8 @@ bot.command("photo", (ctx) => {
 
 bot.start();
 ```
+
+Check out [examples](../examples/).
 
 ### Automatic Action Sending
 
@@ -144,13 +146,4 @@ You need to pass `bot.api` explicitly to use the plugin with conversations.
 ```ts
 // Pass API instance to the plugin
 bot.use(autoChatAction(bot.api));
-
-async function greeting(conversation: Conversation<Context>, ctx: Context) {
-  await ctx.reply("Hi there! What is your name?");
-
-  const { message } = await conversation.wait();
-  ctx.chatAction = "typing";
-  await conversation.sleep(1000);
-  await ctx.reply(`Welcome to the chat, ${message.text}!`);
-}
 ```
