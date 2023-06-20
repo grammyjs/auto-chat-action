@@ -6,17 +6,13 @@
     "build-npm": "deno run --allow-run --allow-net --allow-read --allow-write --allow-env ./scripts/build_npm.ts"
   },
   "fmt": {
-    "files": {
-      "exclude": [
-        "./npm/"
-      ]
-    }
+    "exclude": [
+      "./npm/"
+    ]
   },
   "lint": {
-    "files": {
-      "exclude": [
-        "./npm/"
-      ]
-    }
+    "exclude": [
+      "./npm/"
+    ]
   }
 }
