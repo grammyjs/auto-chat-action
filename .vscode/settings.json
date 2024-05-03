@@ -2,7 +2,9 @@
   "deno.enable": true,
   "deno.lint": true,
   "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": { "source.fixAll": true },
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
   "[typescript]": {
     "editor.defaultFormatter": "denoland.vscode-deno"
   },

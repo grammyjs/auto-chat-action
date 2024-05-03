@@ -91,43 +91,56 @@ Automatic sending of a chat action starts under the following conditions:
 
 Sending of a chat action stops under one of the following conditions:
 
-1. Update processing is complete.
-2. Request which requires the chat action is complete.
-3. `sendChatAction` request caused an error.
+1. Update processing has been completed.
+2. Request which requires the chat action has been completed.
+3. An error occurs during
+   [sendChatAction](https://core.telegram.org/bots/api#sendchataction) request.
+
+This also applies to manually set chat actions. Please note that "stops" only
+refers to stopping sending new requests to set the chat action. The chat action
+may still be displayed for some time (until a timeout occurs or a new message is
+received, depending on the client).
 
 ### Manual Action Sending
 
-#### Sending chat action with context
+#### Sending Chat Action with Context
+
+The plugin adds `chatAction` property to the context that allows you to set chat
+actions for the current update.
 
 ```ts
 // Set the action to be sent until the update is processed
 ctx.chatAction = "typing";
 
-// To stop sending, simply set the chat action to null
+// To stop sending the chat action, simply set it to null
 ctx.chatAction = null;
 
 // You can change the chat action during update processing
 ctx.chatAction = "choose_sticker";
 ```
 
-Sending other requests that require sending a chat action will interrupt the
-sending of the current chat action.
+When you send requests that also require sending a chat action, it interrupts
+the current chat action.
 
 ```ts
+// Set the chat action to "typing"
 ctx.chatAction = "typing";
 
+// Send a message
 await ctx.reply("Hi!");
 
-// Sends "upload_photo" while file is uploading
+// Send a photo (the "upload_photo" action is sent while the file is uploading)
 await ctx.replyWithPhoto(
   new InputFile("/tmp/kitten.png"),
 );
 
-// Now there is no sending chat action
+// There is no ongoing chat action now
 // ctx.chatAction is null
 ```
 
-#### Sending chat action with middleware
+#### Sending Chat Action with Middleware
+
+The plugin also provides the ability to set chat actions using middleware.
 
 ```ts
 import { chatAction } from "@grammyjs/auto-chat-action";
@@ -141,9 +154,9 @@ bot.command("start", chatAction("typing"), (ctx) => {
 
 #### Using with [Conversations](https://grammy.dev/plugins/conversations)
 
-You need to pass `bot.api` explicitly to use the plugin with conversations.
+To use the plugin with conversations, you need to pass `bot.api` explicitly.
 
 ```ts
-// Pass API instance to the plugin
+// Pass the API instance to the plugin
 bot.use(autoChatAction(bot.api));
 ```
