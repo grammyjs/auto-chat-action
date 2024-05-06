@@ -112,8 +112,8 @@ actions for the current update.
 // Set the action to be sent until the update is processed
 ctx.chatAction = "typing";
 
-// To stop sending the chat action, simply set it to null
-ctx.chatAction = null;
+// To stop sending the chat action, simply set it to undefined
+ctx.chatAction = undefined;
 
 // You can change the chat action during update processing
 ctx.chatAction = "choose_sticker";
@@ -135,7 +135,7 @@ await ctx.replyWithPhoto(
 );
 
 // There is no ongoing chat action now
-// ctx.chatAction is null
+// ctx.chatAction is undefined
 ```
 
 #### Sending Chat Action with Middleware

@@ -1267,7 +1267,7 @@ describe("autoChatAction middleware", () => {
 
         await ctx.api.sendPhoto(chat_id, photo, {}, signal);
 
-        assertEquals(ctx.chatAction, null);
+        assertEquals(ctx.chatAction, undefined);
       });
 
       await bot.handleUpdate({
@@ -1386,7 +1386,7 @@ describe("autoChatAction middleware", () => {
         ctx.chatAction = "typing";
         ctx.chatAction = "choose_sticker";
         await time.tickAsync(actionSendingInterval);
-        ctx.chatAction = null;
+        ctx.chatAction = undefined;
         await time.tickAsync(actionSendingInterval * 2);
         ctx.chatAction = "find_location";
 

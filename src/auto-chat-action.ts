@@ -4,7 +4,7 @@ import { createChatActionsController } from "./chat-actions-controller.ts";
 import { getChatActionsForRequest } from "./extract-chat-actions.ts";
 
 export type AutoChatActionFlavor = {
-  chatAction: Action | null;
+  chatAction: Action | undefined;
 };
 
 export function autoChatAction<C extends Context>(
@@ -56,12 +56,12 @@ export function autoChatAction<C extends Context>(
             payload.chat_id,
             messageThreadId,
           );
-          currentAction = null;
+          currentAction = undefined;
         }
       },
     );
 
-    let currentAction: Action | null = null;
+    let currentAction: Action | undefined = undefined;
     Object.defineProperty(ctx, "chatAction", {
       get() {
         return currentAction;
