@@ -1,6 +1,6 @@
 import { build, emptyDir } from "https://deno.land/x/dnt/mod.ts";
 
-import package_ from "./package.json" assert { type: "json" };
+import package_ from "./package.json" with { type: "json" };
 
 await emptyDir("./npm");
 
